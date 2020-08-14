@@ -1,0 +1,39 @@
+{
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "*build",
+    "**/*spec.ts"
+  ],
+  "compilerOptions": {
+    "lib": [
+      "ESNext"
+    ],
+    "outDir": "build",
+    "target": "ES2019",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "incremental": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "alwaysStrict": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "allowSyntheticDefaultImports": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "resolveJsonModule": true,
+    "importHelpers": true
+  }
+}
