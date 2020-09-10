@@ -1,15 +1,19 @@
 import {
-  LoggerConfiguration,
-  LoggerConfigurationExtender,
-  LoggerService
-} from './logger.interface'
+  Configuration,
+  ConfigurationExtender,
+  Servicer
+} from './interface'
 import {
   StaticLogger
-} from './static_logger.module'
+} from './static_module'
 
-export class Logger extends StaticLogger implements LoggerService {
+export class Logger extends StaticLogger implements Servicer {
   private static instance: Logger
-  public static getInstance(config?: LoggerConfiguration): Logger {
+  private constructor() {
+    super()
+  }
+
+  public static getInstance(config?: Configuration): Logger {
     if (!Logger.instance) {
       Logger.instance = new Logger()
       Logger.config = config || Logger.config
@@ -18,7 +22,7 @@ export class Logger extends StaticLogger implements LoggerService {
   }
 
   public info<T>(message: string, context: string, data?: T): void {
-    const loggerConfig: LoggerConfigurationExtender = {
+    const loggerConfig: ConfigurationExtender = {
       ...Logger.config
     }
     if (arguments.length > 2) loggerConfig.showData = true
@@ -26,7 +30,7 @@ export class Logger extends StaticLogger implements LoggerService {
   }
 
   public warn<T>(message: string, context: string, data?: T): void {
-    const loggerConfig: LoggerConfigurationExtender = {
+    const loggerConfig: ConfigurationExtender = {
       ...Logger.config
     }
     if (arguments.length > 2) loggerConfig.showData = true
@@ -34,7 +38,7 @@ export class Logger extends StaticLogger implements LoggerService {
   }
 
   public error<T>(message: string, error: Error, context: string, data?: T): void {
-    const loggerConfig: LoggerConfigurationExtender = {
+    const loggerConfig: ConfigurationExtender = {
       ...Logger.config
     }
     if (arguments.length > 3) loggerConfig.showData = true

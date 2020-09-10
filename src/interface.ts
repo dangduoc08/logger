@@ -1,16 +1,16 @@
-export interface LoggerConfiguration {
+export interface Configuration {
   timestamp?: boolean
   color?: boolean
-  verbose?: boolean
+  multiline?: boolean
   showHidden?: boolean
   depth?: number | boolean
 }
 
-export interface LoggerConfigurationExtender extends LoggerConfiguration {
+export interface ConfigurationExtender extends Configuration {
   showData?: boolean
 }
 
-export interface LoggerService {
+export interface Servicer {
   info<T>(message: string, context: string, data?: T): void
   warn<T>(message: string, context: string, data?: T): void
   error<T>(message: string, error: Error, context: string, data?: T): void

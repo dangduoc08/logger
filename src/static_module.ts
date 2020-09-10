@@ -7,29 +7,29 @@ import {
 } from 'util'
 import {
   Colorize
-} from './logger.util'
+} from './util'
 import {
-  LoggerConfiguration,
-  LoggerConfigurationExtender
-} from './logger.interface'
+  Configuration,
+  ConfigurationExtender
+} from './interface'
 import {
   formattedLog,
   formattedTrace
-} from './logger.type'
+} from './type'
 import {
   LOGGER_LEVEL
-} from './logger.constant'
+} from './constant'
 
 export class StaticLogger extends Colorize {
-  protected static config: LoggerConfigurationExtender = {
+  protected static config: ConfigurationExtender = {
     timestamp: true,
     color: true,
-    verbose: true,
+    multiline: true,
     showHidden: true,
     depth: true
   }
 
-  private static mergeConfig(config: LoggerConfiguration): LoggerConfigurationExtender {
+  private static mergeConfig(config: Configuration): ConfigurationExtender {
     return {
       ...StaticLogger.config,
       ...config
@@ -53,7 +53,7 @@ export class StaticLogger extends Colorize {
     level: string,
     message: string,
     context: string,
-    config: LoggerConfiguration
+    config: Configuration
   ): formattedLog {
     const {
       color: isColorize,
@@ -115,7 +115,7 @@ export class StaticLogger extends Colorize {
     })
   }
 
-  private static printVerboseLog<T>(logs: formattedLog): void {
+  private static printMultilineLog<T>(logs: formattedLog): void {
     const {
       formattedContext,
       formattedMessage,
@@ -126,7 +126,7 @@ export class StaticLogger extends Colorize {
     process.stdout.write(`${formattedLevel}${formattedTimestamp}${formattedContext} ${formattedMessage}\n`)
   }
 
-  private static printVerboseData<T>(data: T, config: LoggerConfiguration): void {
+  private static printMultilineData<T>(data: T, config: Configuration): void {
     const {
       depth,
       color,
@@ -151,7 +151,7 @@ export class StaticLogger extends Colorize {
     process.stdout.write(`${formattedData}\n`)
   }
 
-  private static printVerboseTrace(trace: formattedTrace | undefined, config: LoggerConfiguration): void {
+  private static printMultilineTrace(trace: formattedTrace | undefined, config: Configuration): void {
     if (trace) {
       let colorizedInvokedFn = trace.invokedFunction
         ? `${trace.invokedFunction} `
@@ -186,7 +186,7 @@ export class StaticLogger extends Colorize {
     process.stdout.write(`${formattedLevel}${formattedTimestamp}${formattedContext} ${formattedMessage}${br}`)
   }
 
-  private static printOneLineData<T>(data: T, config: LoggerConfiguration, breakLine?: boolean): void {
+  private static printOneLineData<T>(data: T, config: Configuration, breakLine?: boolean): void {
     const {
       depth,
       color,
@@ -220,17 +220,17 @@ export class StaticLogger extends Colorize {
     process.stdout.write(`${trace}${br}`)
   }
 
-  public static info<T>(message: string, context: string, data?: T, config?: LoggerConfigurationExtender): void {
+  public static info<T>(message: string, context: string, data?: T, config?: ConfigurationExtender): void {
     const level: string = LOGGER_LEVEL.INFO.LEVEL?.toUpperCase()
     let mergedConfig = StaticLogger.config
     if (config) {
       mergedConfig = StaticLogger.mergeConfig(config)
     }
     const logs = StaticLogger.formatLog(level, message, context, mergedConfig)
-    if (mergedConfig.verbose) {
-      StaticLogger.printVerboseLog(logs)
+    if (mergedConfig.multiline) {
+      StaticLogger.printMultilineLog(logs)
       if (mergedConfig.showData) {
-        StaticLogger.printVerboseData(data, mergedConfig)
+        StaticLogger.printMultilineData(data, mergedConfig)
       }
     } else {
       StaticLogger.printOneLineLog(logs, !mergedConfig.showData)
@@ -240,7 +240,7 @@ export class StaticLogger extends Colorize {
     }
   }
 
-  public static warn<T>(message: string, context: string, data?: T, config?: LoggerConfigurationExtender): void {
+  public static warn<T>(message: string, context: string, data?: T, config?: ConfigurationExtender): void {
     const level: string = LOGGER_LEVEL.WARN.LEVEL?.toUpperCase()
     let mergedConfig = StaticLogger.config
     if (config) {
@@ -248,10 +248,10 @@ export class StaticLogger extends Colorize {
     }
     const logs = StaticLogger.formatLog(level, message, context, mergedConfig)
 
-    if (mergedConfig.verbose) {
-      StaticLogger.printVerboseLog(logs)
+    if (mergedConfig.multiline) {
+      StaticLogger.printMultilineLog(logs)
       if (mergedConfig.showData) {
-        StaticLogger.printVerboseData(data, mergedConfig)
+        StaticLogger.printMultilineData(data, mergedConfig)
       }
     } else {
       StaticLogger.printOneLineLog(logs, !mergedConfig.showData)
@@ -261,7 +261,7 @@ export class StaticLogger extends Colorize {
     }
   }
 
-  public static error<T>(message: string, error: Error, context: string, data?: T, config?: LoggerConfigurationExtender): void {
+  public static error<T>(message: string, error: Error, context: string, data?: T, config?: ConfigurationExtender): void {
     const level: string = LOGGER_LEVEL.ERROR.LEVEL?.toUpperCase()
     let mergedConfig = StaticLogger.config
     if (config) {
@@ -270,16 +270,16 @@ export class StaticLogger extends Colorize {
     const logs = StaticLogger.formatLog(level, message, context, mergedConfig)
     const isError: boolean = error instanceof Error
 
-    if (mergedConfig.verbose) {
-      StaticLogger.printVerboseLog(logs)
+    if (mergedConfig.multiline) {
+      StaticLogger.printMultilineLog(logs)
       if (mergedConfig.showData) {
-        StaticLogger.printVerboseData(data, mergedConfig)
+        StaticLogger.printMultilineData(data, mergedConfig)
       }
       if (isError) {
         const errorStack = error.stack || ''
         const errorTrace: string[] = errorStack.split('\n')
         StaticLogger.formatTrace(errorTrace, eachTrace => {
-          StaticLogger.printVerboseTrace(eachTrace, mergedConfig)
+          StaticLogger.printMultilineTrace(eachTrace, mergedConfig)
         })
       }
     } else {
