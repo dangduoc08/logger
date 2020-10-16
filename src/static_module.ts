@@ -65,7 +65,7 @@ export class StaticLogger extends Colorize {
       : ' '
 
     let formattedLevel: string = `[${level}]`
-    let formattedContext = `[${context}]`
+    let formattedContext = context ? `[${context}] ` : ''
     let formattedMessage = message
     const color: string = LOGGER_LEVEL[level].COLOR
 
@@ -123,7 +123,7 @@ export class StaticLogger extends Colorize {
       formattedTimestamp
     } = logs
 
-    process.stdout.write(`${formattedLevel}${formattedTimestamp}${formattedContext} ${formattedMessage}\n`)
+    process.stdout.write(`${formattedLevel}${formattedTimestamp}${formattedContext}${formattedMessage}\n`)
   }
 
   private static printMultilineData<T>(data: T, config: Configuration): void {
@@ -183,7 +183,7 @@ export class StaticLogger extends Colorize {
 
     const br: string = breakLine ? '\n' : ' '
 
-    process.stdout.write(`${formattedLevel}${formattedTimestamp}${formattedContext} ${formattedMessage}${br}`)
+    process.stdout.write(`${formattedLevel}${formattedTimestamp}${formattedContext}${formattedMessage}${br}`)
   }
 
   private static printOneLineData<T>(data: T, config: Configuration, breakLine?: boolean): void {
@@ -220,12 +220,15 @@ export class StaticLogger extends Colorize {
     process.stdout.write(`${trace}${br}`)
   }
 
-  public static info<T>(message: string, context: string, data?: T, config?: ConfigurationExtender): void {
+  public static info<T>(message: string, context?: string, data?: T, config?: ConfigurationExtender): void {
     const level: string = LOGGER_LEVEL.INFO.LEVEL?.toUpperCase()
     let mergedConfig = StaticLogger.config
     if (config) {
       mergedConfig = StaticLogger.mergeConfig(config)
     }
+
+    context = context ? context : ''
+
     const logs = StaticLogger.formatLog(level, message, context, mergedConfig)
     if (mergedConfig.multiline) {
       StaticLogger.printMultilineLog(logs)
@@ -240,12 +243,15 @@ export class StaticLogger extends Colorize {
     }
   }
 
-  public static warn<T>(message: string, context: string, data?: T, config?: ConfigurationExtender): void {
+  public static warn<T>(message: string, context?: string, data?: T, config?: ConfigurationExtender): void {
     const level: string = LOGGER_LEVEL.WARN.LEVEL?.toUpperCase()
     let mergedConfig = StaticLogger.config
     if (config) {
       mergedConfig = StaticLogger.mergeConfig(config)
     }
+
+    context = context ? context : ''
+
     const logs = StaticLogger.formatLog(level, message, context, mergedConfig)
 
     if (mergedConfig.multiline) {
@@ -261,12 +267,15 @@ export class StaticLogger extends Colorize {
     }
   }
 
-  public static error<T>(message: string, error: Error, context: string, data?: T, config?: ConfigurationExtender): void {
+  public static error<T>(message: string, error: Error, context?: string, data?: T, config?: ConfigurationExtender): void {
     const level: string = LOGGER_LEVEL.ERROR.LEVEL?.toUpperCase()
     let mergedConfig = StaticLogger.config
     if (config) {
       mergedConfig = StaticLogger.mergeConfig(config)
     }
+
+    context = context ? context : ''
+
     const logs = StaticLogger.formatLog(level, message, context, mergedConfig)
     const isError: boolean = error instanceof Error
 

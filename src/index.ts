@@ -3,11 +3,11 @@ import {
 } from './module'
 import {
   Configuration,
-  Servicer
+  LoggerService
 } from './interface'
 
 export {
   Logger,
   Configuration,
-  Servicer
+  LoggerService
 }

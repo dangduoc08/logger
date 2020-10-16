@@ -1,13 +1,13 @@
 import {
   Configuration,
   ConfigurationExtender,
-  Servicer
+  LoggerService
 } from './interface'
 import {
   StaticLogger
 } from './static_module'
 
-export class Logger extends StaticLogger implements Servicer {
+export class Logger extends StaticLogger implements LoggerService {
   private static instance: Logger
   private constructor() {
     super()
@@ -21,7 +21,7 @@ export class Logger extends StaticLogger implements Servicer {
     return Logger.instance
   }
 
-  public info<T>(message: string, context: string, data?: T): void {
+  public info<T>(message: string, context?: string, data?: T): void {
     const loggerConfig: ConfigurationExtender = {
       ...Logger.config
     }
@@ -29,7 +29,7 @@ export class Logger extends StaticLogger implements Servicer {
     Logger.info(message, context, data, loggerConfig)
   }
 
-  public warn<T>(message: string, context: string, data?: T): void {
+  public warn<T>(message: string, context?: string, data?: T): void {
     const loggerConfig: ConfigurationExtender = {
       ...Logger.config
     }
@@ -37,7 +37,7 @@ export class Logger extends StaticLogger implements Servicer {
     Logger.warn(message, context, data, loggerConfig)
   }
 
-  public error<T>(message: string, error: Error, context: string, data?: T): void {
+  public error<T>(message: string, error: Error, context?: string, data?: T): void {
     const loggerConfig: ConfigurationExtender = {
       ...Logger.config
     }
